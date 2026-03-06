@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictive Pulse – AI-Based Hypertension Risk Assessment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+                <h1>Predictive Pulse</h1>
+            </div>
+            <p>AI-Based Hypertension Risk Assessment</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="form-section">
+            <h2>Patient Assessment Form</h2>
+            <p class="subtitle">Please fill out the details accurately for the most precise risk prediction.</p>
+
+            {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="/" id="assessmentForm">
+                <div class="form-grid">
+                    <!-- Demographics -->
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="" disabled {% if not form_data or not form_data.gender %}selected{% endif %}>
+                                Select Gender</option>
+                            <option value="Male" {% if form_data and form_data.gender=='Male' %}selected{% endif %}>Male
+                            </option>
+                            <option value="Female" {% if form_data and form_data.gender=='Female' %}selected{% endif %}>
+                                Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">Age Group</label>
+                        <select id="age" name="age" required>
+                            <option value="" disabled {% if not form_data or not form_data.age %}selected{% endif %}>
+                                Select Age Group</option>
+                            <option value="18-34" {% if form_data and form_data.age=='18-34' %}selected{% endif %}>18-34
+                            </option>
+                            <option value="35-50" {% if form_data and form_data.age=='35-50' %}selected{% endif %}>35-50
+                            </option>
+                            <option value="51-64" {% if form_data and form_data.age=='51-64' %}selected{% endif %}>51-64
+                            </option>
+                            <option value="65+" {% if form_data and form_data.age=='65+' %}selected{% endif %}>65+
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Medical History -->
+                    <div class="form-group">
+                        <label for="family_history">Family History of Hypertension?</label>
+                        <select id="family_history" name="family_history" required>
+                            <option value="" disabled {% if not form_data or not form_data.family_history %}selected{%
+                                endif %}>Select</option>
+                            <option value="Yes" {% if form_data and form_data.family_history=='Yes' %}selected{% endif
+                                %}>Yes</option>
+                            <option value="No" {% if form_data and form_data.family_history=='No' %}selected{% endif %}>
+                                No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="medication">Current Medication Usage?</label>
+                        <select id="medication" name="medication" required>
+                            <option value="" disabled {% if not form_data or not form_data.medication %}selected{% endif
+                                %}>Select</option>
+                            <option value="Yes" {% if form_data and form_data.medication=='Yes' %}selected{% endif %}>
+                                Yes</option>
+                            <option value="No" {% if form_data and form_data.medication=='No' %}selected{% endif %}>No
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Symptoms -->
+                    <div class="form-group">
+                        <label for="symptom_severity">General Symptom Severity</label>
+                        <select id="symptom_severity" name="symptom_severity" required>
+                            <option value="" disabled {% if not form_data or not form_data.symptom_severity %}selected{%
+                                endif %}>Select Severity</option>
+                            <option value="Mild" {% if form_data and form_data.symptom_severity=='Mild' %}selected{%
+                                endif %}>Mild</option>
+                            <option value="Moderate" {% if form_data and form_data.symptom_severity=='Moderate'
+                                %}selected{% endif %}>Moderate</option>
+                            <option value="Severe" {% if form_data and form_data.symptom_severity=='Severe' %}selected{%
+                                endif %}>Severe</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shortness_of_breath">Shortness of Breath?</label>
+                        <select id="shortness_of_breath" name="shortness_of_breath" required>
+                            <option value="" disabled {% if not form_data or not form_data.shortness_of_breath
+                                %}selected{% endif %}>Select</option>
+                            <option value="Yes" {% if form_data and form_data.shortness_of_breath=='Yes' %}selected{%
+                                endif %}>Yes</option>
+                            <option value="No" {% if form_data and form_data.shortness_of_breath=='No' %}selected{%
+                                endif %}>No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="visual_changes">Visual Changes?</label>
+                        <select id="visual_changes" name="visual_changes" required>
+                            <option value="" disabled {% if not form_data or not form_data.visual_changes %}selected{%
+                                endif %}>Select</option>
+                            <option value="Yes" {% if form_data and form_data.visual_changes=='Yes' %}selected{% endif
+                                %}>Yes</option>
+                            <option value="No" {% if form_data and form_data.visual_changes=='No' %}selected{% endif %}>
+                                No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nosebleeds">Frequent Nosebleeds?</label>
+                        <select id="nosebleeds" name="nosebleeds" required>
+                            <option value="" disabled {% if not form_data or not form_data.nosebleeds %}selected{% endif
+                                %}>Select</option>
+                            <option value="Yes" {% if form_data and form_data.nosebleeds=='Yes' %}selected{% endif %}>
+                                Yes</option>
+                            <option value="No" {% if form_data and form_data.nosebleeds=='No' %}selected{% endif %}>No
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Vitals Details -->
+                    <div class="form-group">
+                        <label for="sys_bp">Systolic BP Range (mmHg)</label>
+                        <select id="sys_bp" name="sys_bp" required>
+                            <option value="" disabled {% if not form_data or not form_data.sys_bp %}selected{% endif %}>
+                                Select Range</option>
+                            <option value="<120" {% if form_data and form_data.sys_bp=='<120' %}selected{% endif %}>
+                                < 120 (Normal)</option>
+                            <option value="120-129" {% if form_data and form_data.sys_bp=='120-129' %}selected{% endif
+                                %}>120 - 129 (Elevated)</option>
+                            <option value="130-139" {% if form_data and form_data.sys_bp=='130-139' %}selected{% endif
+                                %}>130 - 139 (Stage 1)</option>
+                            <option value="140-180" {% if form_data and form_data.sys_bp=='140-180' %}selected{% endif
+                                %}>140 - 180 (Stage 2)</option>
+                            <option value=">180" {% if form_data and form_data.sys_bp=='>180' %}selected{% endif %}>>
+                                180 (Crisis)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dia_bp">Diastolic BP Range (mmHg)</label>
+                        <select id="dia_bp" name="dia_bp" required>
+                            <option value="" disabled {% if not form_data or not form_data.dia_bp %}selected{% endif %}>
+                                Select Range</option>
+                            <option value="<80" {% if form_data and form_data.dia_bp=='<80' %}selected{% endif %}>
+                                < 80 (Normal/Elevated)</option>
+                            <option value="80-89" {% if form_data and form_data.dia_bp=='80-89' %}selected{% endif %}>80
+                                - 89 (Stage 1)</option>
+                            <option value="90-120" {% if form_data and form_data.dia_bp=='90-120' %}selected{% endif %}>
+                                90 - 120 (Stage 2)</option>
+                            <option value=">120" {% if form_data and form_data.dia_bp=='>120' %}selected{% endif %}>>
+                                120 (Crisis)</option>
+                        </select>
+                    </div>
+
+                    <!-- Lifestyle -->
+                    <div class="form-group full-width">
+                        <label for="diet_control">Following a Controlled Diet (e.g., DASH)?</label>
+                        <select id="diet_control" name="diet_control" required>
+                            <option value="" disabled {% if not form_data or not form_data.diet_control %}selected{%
+                                endif %}>Select</option>
+                            <option value="Yes" {% if form_data and form_data.diet_control=='Yes' %}selected{% endif %}>
+                                Yes</option>
+                            <option value="No" {% if form_data and form_data.diet_control=='No' %}selected{% endif %}>No
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Predict Hypertension Stage</button>
+                    <button type="button" class="btn-secondary" onclick="window.location.href='/'">Reset</button>
+                </div>
+            </form>
+        </section>
+
+        {% if result %}
+        <section class="result-section" id="resultBlock">
+            <h2>Assessment Result</h2>
+            <div class="result-card risk-{{ result.color }}">
+                <div class="result-header">
+                    <h3>Hypertension Stage</h3>
+                    <div class="stage-badge risk-{{ result.color }}">{{ result.stage_label }}</div>
+                </div>
+
+                <div class="result-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Confidence Score</span>
+                        <span class="detail-value">{{ result.confidence }}%</span>
+                    </div>
+                </div>
+
+                <div class="recommendation-box">
+                    <h4>Clinical Recommendation</h4>
+                    <p>{{ result.recommendation }}</p>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            // Scroll to results when they appear
+            document.addEventListener('DOMContentLoaded', function () {
+                var resultBlock = document.getElementById('resultBlock');
+                if (resultBlock) {
+                    resultBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        </script>
+        {% endif %}
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <p><strong>Disclaimer:</strong> This tool is for preliminary screening only. Consult a healthcare
+                professional.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
